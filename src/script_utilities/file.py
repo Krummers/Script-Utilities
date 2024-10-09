@@ -182,7 +182,7 @@ class PKL(File):
         self.extension = extension
         
         try:
-            with open(self.path, "x") as file:
+            with open(self.path, "wb") as file:
                 pk.dump(None, file)
         except FileExistsError:
             pass
