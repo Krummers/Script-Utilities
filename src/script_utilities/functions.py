@@ -4,8 +4,8 @@ import json as js
 import os
 import tqdm as td
 
-import constants as cs
-import file as fl
+from . import constants as cs
+from . import file as fl
 
 cwd = os.getcwd()
 
