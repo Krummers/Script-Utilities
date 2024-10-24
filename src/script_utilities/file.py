@@ -25,11 +25,6 @@ class File(object):
         
         return os.path.exists(self.path)
     
-    def __del__(self) -> None:
-        """Deletes a file."""
-        
-        os.remove(self.path)
-    
     def rename(self, filename: str) -> None:
         """Renames a file."""
         
@@ -88,13 +83,13 @@ class File(object):
         
         sh.copyfile(self.path, path)
         return File(path)
+    
+    def delete(self) -> None:
+        """Deletes a file."""
+        
+        os.remove(self.path)
 
 class Folder(File):
-    
-    def __del__(self) -> None:
-        """Deletes a folder."""
-        
-        sh.rmtree(self.path)
     
     def copy(self, path: str) -> tp.Self:
         """Copies a folder to a new path."""
@@ -124,12 +119,17 @@ class Folder(File):
             
             if isinstance(old, File):
                 if bool(old) and bool(new):
-                    del old
+                     old.delete()
                 new.move(old.path)
             else:
                 old.merge(new)
         
-        del other
+        other.delete()
+    
+    def delete(self) -> None:
+        """Deletes a folder."""
+        
+        sh.rmtree(self.path)
 
 class TXT(File):
     
@@ -229,13 +229,6 @@ class TXZ(File):
         self.extension = extension
         self.tar = None
     
-    def __del__(self) -> None:
-        """Deletes the file and the extracted TAR file."""
-        
-        os.remove(self.path)
-        if bool(self.tar):
-            del self.tar
-    
     def extract(self) -> None:
         """Extracts a TAR file from the archive."""
         
@@ -247,6 +240,13 @@ class TXZ(File):
             if file not in old_files:
                 self.tar = TAR(os.path.join(self.folder, file))
                 return
+    
+    def delete(self) -> None:
+        """Deletes the file and the extracted TAR file."""
+        
+        os.remove(self.path)
+        if bool(self.tar):
+            self.tar.delete()
 
 class TAR(File):
     
@@ -261,13 +261,6 @@ class TAR(File):
         self.filename = os.path.basename(basepath)
         self.extension = extension
         self.extracted_folder = None
-    
-    def __del__(self) -> None:
-        """Deletes the file and the extracted folder."""
-        
-        os.remove(self.path)
-        if bool(self.extracted_folder):
-            del self.extracted_folder
     
     def extract(self) -> None:
         """Extracts a folder from the archive."""
@@ -289,4 +282,11 @@ class TAR(File):
         
         os.remove(self.path)
         os.system(f"7z a \"{self.path}\" \"{self.extracted_folder.path}\"")
-        del self.extracted_folder
+        self.extracted_folder.delete()
+    
+    def delete(self) -> None:
+        """Deletes the file and the extracted folder."""
+        
+        os.remove(self.path)
+        if bool(self.extracted_folder):
+            self.extracted_folder.delete()
