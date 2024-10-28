@@ -35,7 +35,7 @@ class File(object):
     def move(self, path: str) -> None:
         """Moves a file to a new path. The filename must stay the same."""
         
-        if self.filename != os.path.basename(path):
+        if self.filename + self.extension != os.path.basename(path):
             raise ValueError("filename does not match")
         
         if not os.path.exists(os.path.dirname(path)):
@@ -61,7 +61,7 @@ class File(object):
             else:
                 os.makedirs(new_folder)
         
-        new_path = os.path.join(new_folder, self.filename)
+        new_path = os.path.join(new_folder, self.filename + self.extension)
         sh.move(self.path, new_path)
         self.__init__(new_path)
     
@@ -73,7 +73,7 @@ class File(object):
                             f"'{type(self).__name__}' and '{type(amount).__name__}'")
         
         for x in range(amount):
-            self.move(os.path.join(os.path.dirname(self.folder), self.filename))
+            self.move(os.path.join(os.path.dirname(self.folder), self.filename + self.extension))
         
     def copy(self, path: str) -> tp.Self:
         """Copies a file to a new path."""
