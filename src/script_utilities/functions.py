@@ -1,11 +1,8 @@
-import cloudscraper as cc
 import httpx as hx
-import json as js
 import os
 import tqdm as td
 
 from . import constants as cs
-from . import file as fl
 
 cwd = os.getcwd()
 
@@ -72,50 +69,3 @@ def clear_screen() -> None:
     """Clear the screen for Windows and Unix-based systems."""
     
     os.system("cls" if os.name == "nt" else "clear")
-
-def get_translations() -> dict[str, dict]:
-    """Collect all translations from the Custom Mario Kart Wiiki."""
-    
-    scraper = cc.create_scraper(browser = {"custom": "ScraperBot"})
-    text = scraper.get("https://wiki.tockdom.com/info-w/translations.json").text
-    json = js.loads(text)
-    return json["translate"]
-
-def get_prefixes() -> list[str]:
-    """Collect all prefixes from Wiimm's CT-Archive."""
-    
-    file = fl.TXT(os.path.join(os.getcwd(), "prefixes.txt"))
-    download("https://ct.wiimm.de/export/prefix", file.path)
-    
-    info = file.read()
-    
-    prefixes = set()
-    for k in range(len(info)):
-        if info[k][0] == "#" or info[k][0] == "@":
-            continue
-        prefixes.add(info[k][:info[k].find("|")])
-    file.delete()
-    return prefixes
-
-def rename_riivolution(riivolution: fl.Folder, Wiimm_Intermezzo: fl.File, new_suffix: str) -> tuple[fl.Folder, fl.File]:
-    """Rename an Intermezzo build from Wiimm so it has a unique name for Riivolution."""
-    
-    for file in os.listdir(riivolution.path):
-        if file.endswith(".xml"):
-            xml = fl.TXT(os.path.join(riivolution.path, file))
-            break
-    if xml.filename != "Wiimm-Intermezzo.xml":
-        current_suffix = xml.filename[len("Wiimm-Intermezzo-"):xml.filename.find(".xml")]
-    else:
-        current_suffix = ""
-    lines = xml.read()
-    for x in range(len(lines)):
-        lines[x] = lines[x].replace(f"WiimmIntermezzo{current_suffix}", f"WiimmIntermezzo{new_suffix}")
-        if current_suffix:
-            lines[x] = lines[x].replace(f"Wiimm-Intermezzo-{current_suffix}", f"Wiimm-Intermezzo-{new_suffix}")
-        else:
-            lines[x] = lines[x].replace("Wiimm-Intermezzo", f"Wiimm-Intermezzo-{new_suffix}")
-    xml.write(lines)
-    xml.rename(f"Wiimm-Intermezzo-{new_suffix}.xml")
-    Wiimm_Intermezzo.rename(f"Wiimm-Intermezzo-{new_suffix}")
-    return riivolution, Wiimm_Intermezzo
