@@ -181,11 +181,9 @@ class PKL(File):
         self.filename = os.path.basename(basepath)
         self.extension = extension
         
-        try:
+        if not bool(self):
             with open(self.path, "wb") as file:
                 pk.dump(None, file)
-        except FileExistsError:
-            pass
         
     def __repr__(self) -> str:
         """Returns the filename and the value that it contains."""
