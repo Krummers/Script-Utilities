@@ -133,25 +133,32 @@ class Folder(File):
 
 class TXT(File):
     
-    def read(self) -> list[str]:
+    def read(self, newline = False) -> list[str]:
         """Returns the contents of a text file as a list of strings."""
         
         with open(self.path, "r", encoding = "utf-8") as file:
             lines = file.readlines()
         
+        if not newline:
+            for x in range(len(lines) - 1):
+                lines[x] = lines[x][:-1]
+        
         return lines
     
-    def write(self, lines: list[str]) -> None:
+    def write(self, lines: list[str], newline = True) -> None:
         """Writes a list of strings to a text file."""
         
         with open(self.path, "w", encoding = "utf-8") as file:
-            file.writelines("".join(lines))
+            if newline:
+                file.writelines("\n".join(lines))
+            else:
+                file.writelines("".join(lines))
     
-    def rewrite(self, index: int, line: str) -> None:
+    def rewrite(self, index: int, line: str, newline = True) -> None:
         """Rewrites a single line from a text file."""
         
         lines = self.read()
-        lines[index] = line
+        lines[index] = line + ("\n" if newline else "")
         self.write(lines)
     
     def find(self, string: str) -> int:
@@ -162,11 +169,11 @@ class TXT(File):
             if line.strip().startswith(string):
                 return x
     
-    def append(self, line: str) -> None:
+    def append(self, line: str, newline = True) -> None:
         """Appends a line to the end of a text file."""
         
         with open(self.path, "a", encoding = "utf-8") as file:
-            file.writeline(line)
+            file.writelines(line + ("\n" if newline else ""))
 
 class PKL(File):
     
