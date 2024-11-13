@@ -7,7 +7,7 @@ packages = ["src/script_utilities"]
 
 [project]
 name = "script-utilities"
-version = "0.5.0"
+version = "0.6.0"
 authors = [
 	{name = "Krummers", email = "krummers10@gmail.com"}
 ]
