@@ -40,6 +40,35 @@ def question(string: str) -> bool:
         else:
             print("This is not an option. Please try again.")
 
+def print_menu(strings: list[str]) -> None:
+    """Prints a menu for a given list of strings."""
+    
+    for x, string in enumerate(strings):
+        print(f"{chr(x + 65)}. {string}")
+
+def select_option(options: list, question: str) -> object:
+    """Lets the user select an option based on the given question."""
+    
+    while True:
+        choice = input(f"{question} (Enter the corresponding option): ")
+        
+        if len(choice) != 1:
+            print("This is not an option. Please try again.")
+        elif (index := ord(choice.upper()) - 65) in range(len(options)):
+            return options[index]
+        else:
+            print("This is not an option. Please try again.")
+
+def options_question(options: list, question = "What needs to be selected?",
+                     display: list[str] = None) -> object:
+    """Lets the user select an option based on the given question and strings."""
+    
+    if not display:
+        display = options
+    
+    print_menu(display)
+    return select_option(options, question)
+
 def drive_selection() -> str:
     """Lets the user select a drive for a directory."""
     
