@@ -7,7 +7,7 @@ from . import constants as cs
 cwd = os.getcwd()
 
 def download(link: str, path: str, progress = True, description = None) -> None:
-    """Download data from 'link' and store at 'path'."""
+    """Downloads data from a given link at path."""
     
     if description is not None:
         print(f"Downloading {description}...")
@@ -28,7 +28,8 @@ def download(link: str, path: str, progress = True, description = None) -> None:
                         num_bytes_downloaded = response.num_bytes_downloaded
 
 def question(string: str) -> bool:
-    """Ask the user a Y/N question and return the accompagnied truth value."""
+    """Asks the user a Y/N question and returns the accompagnied truth value."""
+    
     while True:
         choice = input(f"{string} (Y/N): ").lower()
         
@@ -40,7 +41,7 @@ def question(string: str) -> bool:
             print("This is not an option. Please try again.")
 
 def drive_selection() -> str:
-    """Select a drive for a directory."""
+    """Lets the user select a drive for a directory."""
     
     # Select drive for Windows only
     if os.name == "nt":
@@ -66,6 +67,6 @@ def drive_selection() -> str:
         return os.path.splitdrive(cwd)[0]
 
 def clear_screen() -> None:
-    """Clear the screen for Windows and Unix-based systems."""
+    """Clears the screen for Windows and Unix-based systems."""
     
     os.system("cls" if os.name == "nt" else "clear")
