@@ -43,21 +43,37 @@ def question(string: str) -> bool:
 def print_menu(strings: list[str]) -> None:
     """Prints a menu for a given list of strings."""
     
+    extra_letter = -2
     for x, string in enumerate(strings):
-        print(f"{chr(x + 65)}. {string}")
+        if x % 26 == 0:
+            extra_letter += 1
+        
+        if extra_letter <= -1:
+            print(f"{chr(x % 26 + 65)}. {string}")
+        else:
+            print(f"{chr(extra_letter + 65)}{chr(x % 26 + 65)}. {string}")
 
 def select_option(options: list, question: str) -> object:
     """Lets the user select an option based on the given question."""
     
-    while True:
-        choice = input(f"{question} (Enter the corresponding option): ")
+    choices = []
+    extra_letter = -2
+    for x in range(len(options)):
+        if x % 26 == 0:
+            extra_letter += 1
         
-        if len(choice) != 1:
-            print("This is not an option. Please try again.")
-        elif (index := ord(choice.upper()) - 65) in range(len(options)):
-            return options[index]
+        if extra_letter <= -1:
+            choices.append(str(chr(x % 26 + 65)))
         else:
+            choices.append(str(chr(extra_letter + 65)) + str(chr(x % 26 + 65)))
+    
+    while True:
+        choice = input(f"{question} (Enter the corresponding option): ").upper()
+        
+        if choice not in choices:
             print("This is not an option. Please try again.")
+        else:
+            return options[choices.index(choice)]
 
 def options_question(options: list, question = "What needs to be selected?",
                      display: list[str] = None) -> object:
