@@ -8,12 +8,9 @@ cwd = os.getcwd()
 class File(object):
     
     def __init__(self, path: str) -> None:
-        basepath, extension = os.path.splitext(path)
-        
         self.path = path
         self.folder = os.path.dirname(path)
-        self.filename = os.path.basename(basepath)
-        self.extension = extension
+        self.filename = os.path.basename(path)
     
     def __repr__(self) -> str:
         """Returns the path of the file."""
@@ -35,7 +32,7 @@ class File(object):
     def move(self, path: str) -> None:
         """Moves a file to a new path. The filename must stay the same."""
         
-        if self.filename + self.extension != os.path.basename(path):
+        if self.filename != os.path.basename(path):
             raise ValueError("filename does not match")
         
         if not os.path.exists(os.path.dirname(path)):
@@ -61,7 +58,7 @@ class File(object):
             else:
                 os.makedirs(new_folder)
         
-        new_path = os.path.join(new_folder, self.filename + self.extension)
+        new_path = os.path.join(new_folder, self.filename)
         sh.move(self.path, new_path)
         self.__init__(new_path)
     
@@ -73,7 +70,7 @@ class File(object):
                             f"'{type(self).__name__}' and '{type(amount).__name__}'")
         
         for x in range(amount):
-            self.move(os.path.join(os.path.dirname(self.folder), self.filename + self.extension))
+            self.move(os.path.join(os.path.dirname(self.folder), self.filename))
         
     def copy(self, path: str) -> tp.Self:
         """Copies a file to a new path."""
@@ -181,12 +178,9 @@ class PKL(File):
         if not path.endswith(".pkl"):
             raise ValueError("not a pkl file")
         
-        basepath, extension = os.path.splitext(path)
-        
         self.path = path
         self.folder = os.path.dirname(path)
-        self.filename = os.path.basename(basepath)
-        self.extension = extension
+        self.filename = os.path.basename(path)
         
         if not bool(self):
             with open(self.path, "wb") as file:
@@ -226,12 +220,9 @@ class TXZ(File):
         if not path.endswith(".txz"):
             raise ValueError("not a txz file")
         
-        basepath, extension = os.path.splitext(path)
-        
         self.path = path
         self.folder = os.path.dirname(path)
-        self.filename = os.path.basename(basepath)
-        self.extension = extension
+        self.filename = os.path.basename(path)
         self.tar = None
     
     def extract(self) -> None:
@@ -259,12 +250,9 @@ class TAR(File):
         if not path.endswith(".tar"):
             raise ValueError("not a tar file")
         
-        basepath, extension = os.path.splitext(path)
-        
         self.path = path
         self.folder = os.path.dirname(path)
-        self.filename = os.path.basename(basepath)
-        self.extension = extension
+        self.filename = os.path.basename(path)
         self.extracted_folder = None
     
     def extract(self) -> None:
